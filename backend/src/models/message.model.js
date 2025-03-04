@@ -13,7 +13,7 @@ const messageSchema = new Schema({
         ref: "User",
         required: true,
     },
-    content: { type: String, required: true},
+    content: { type: String },
     chatId: { type: String, required: true},
     imageUrl: {type: [String]}
 }, { timestamps: true });

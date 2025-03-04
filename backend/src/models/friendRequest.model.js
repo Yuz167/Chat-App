@@ -13,7 +13,7 @@ const friendRequestSchema = new Schema({
       ref: "User",
       required: true,
     },
-});
+},{ timestamps: true });
 
 const FriendRequest = mongoose.model("friendRequest", friendRequestSchema)
 export default FriendRequest

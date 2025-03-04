@@ -1,6 +1,6 @@
 import {create} from "zustand"
 import { axiosInstance } from "../lib/axios";
-import { QueryClient, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { QUERY_KEYS } from "../queryKeys";
 import mongoose from "mongoose";
@@ -196,6 +196,27 @@ export const useAuthStore = create((set, get:()=>any) => ({
             queryKey:[QUERY_KEYS.GET_INDIVIDUAL_USER, userId],
             queryFn:() => get().getIndividulUser(userId),
             enabled: options?.enabled,
+        })
+    },
+
+    deleteFriendRequest: async(data:{participant1:mongoose.Types.ObjectId, participant2:mongoose.Types.ObjectId}) => {
+        if(!data.participant1 || !data.participant2) throw new Error('Missing participants')
+        try {
+            const response = await axiosInstance.post('/auth/deleteFriendRequests', data)
+        } catch (error:any) {
+            throw new Error(error.response?.data?.message || 'Failed to fetch data')
+        }
+    },
+
+    useDeleteFriendRequest: () => {
+        const queryClient =  useQueryClient()
+        return useMutation({
+            mutationFn:(data:{participant1:mongoose.Types.ObjectId, participant2:mongoose.Types.ObjectId}) => get().deleteFriendRequest(data),
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey:[QUERY_KEYS.GET_FRIEND_REQUESTS]
+                })
+            }
         })
     }
 

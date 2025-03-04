@@ -7,19 +7,27 @@ import { useAuthStore } from '../../store/useAuthStore'
 import UserBar from '../UserBar'
 import {useInView} from 'react-intersection-observer'
 import Loader from '../Loader'
+import { useQueryClient } from '@tanstack/react-query'
 
 
 const ChatList = () => {
   const [addMode, setAddMode] = useState<boolean>(false)
-  const {useGetChats} = useChatStore()
+  const {useGetChats, subscribeToNewChat, unsubscribeFromNewChat} = useChatStore()
   const {data:chats, isFetching:isLoadingChats} = useGetChats()
   const {useGetUsers} = useAuthStore()
   const {data:addFriendList, fetchNextPage, hasNextPage} = useGetUsers()
   const {ref, inView} = useInView()
+  const queryClient = useQueryClient()
 
   useEffect(()=>{
     if(inView) fetchNextPage()
   },[inView])
+
+  useEffect(()=>{
+    subscribeToNewChat(queryClient)
+
+    return () => unsubscribeFromNewChat()
+  })
 
 
   if(isLoadingChats) return 
@@ -27,7 +35,7 @@ const ChatList = () => {
   return (
     <div className='flex-1 flex flex-col overflow-scroll gap-5'>
         <div className='flex gap-4 px-3 relative'>
-            {addMode &&
+            {addMode && 
                 <div className='absolute bg-[rgba(76,107,160,0.5)] backdrop-blur-md py-2 left-3 right-3 top-full flex flex-col overflow-scroll max-h-64'>
                     <ul className='flex flex-col gap-2'>
                         {addFriendList?.pages?.map((page:any) => (
@@ -55,7 +63,7 @@ const ChatList = () => {
                 onClick={()=>setAddMode(prev => !prev)}
             />
         </div>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col'>
             {/* <ChatBar  chatId={chats[0]._id}/> */}
             {chats?.map((chat:IChat)=>(
                 <ChatBar  chat={chat} />

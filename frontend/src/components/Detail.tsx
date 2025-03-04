@@ -69,8 +69,8 @@ const Detail = () => {
   return (
     <div className='flex-1 flex flex-col'>
       <div className='flex flex-col justify-center items-center gap-3 py-5 border-b-[1px] border-b-[#dddddd35]'>
-        <img src='/avatar.png' className='w-[70px] h-[70px] rounded-full'/>
-        <h1 className='font-semibold'>Dylan Zhang</h1>
+        <img src={authUser?.imageUrl || '/avatar.png'} className='w-[70px] h-[70px] rounded-full'/>
+        <h1 className='font-semibold'>{authUser?.username}</h1>
         <p className='text-xs'>Study hard, Play hard</p>
       </div>
       <ul className='flex w-full flex-col p-4 gap-5'>
@@ -141,11 +141,11 @@ const Detail = () => {
               return(
                 <div className='flex items-center pr-5'>
                   <div className='flex gap-3 items-center'>
-                    <img src='/favicon.png' className='h-[40px] w-[40px]'/>
+                    <img src={data?.imageUrl || '/avatar.png'} className='h-[40px] w-[40px]'/>
                     <p className='text-[0.70rem] font-light'>{data?.username}</p>
                   </div>
                   <div className='ml-auto flex gap-6'>
-                    <div onClick={() => acceptFriendRequest(authUser._id, data?._id, index)} className='cursor-pointer'>
+                    <div onClick={() => acceptFriendRequest(authUser._id, data?._id)} className='cursor-pointer'>
                       <FcCheckmark />
                     </div>
                     <div className='cursor-pointer'>

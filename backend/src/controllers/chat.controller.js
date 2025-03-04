@@ -1,7 +1,9 @@
 import Chat from "../models/chat.model.js"
+import {deleteFriendRequest} from "./auth.controller.js"
+import { getReciverSocketId, io } from "../lib/socket.js"
 
 export const createChat = async(req, res) => {
-    const {participant1, participant2} = req.body
+    const {participant1, participant2} = req.body //participant1 is the reciever, participant2 is the sender
 
     if(!participant1 || !participant2){
         return res.status(400).json({error:true, message:"Something is wrong"})
@@ -24,6 +26,11 @@ export const createChat = async(req, res) => {
         })
         await newChat.save()
 
+        await deleteFriendRequest(req, null)
+
+        const senderSocketId = getReciverSocketId(participant2)
+        if(senderSocketId){ io.to(senderSocketId).emit("newChat", newChat) }
+
         return res.json({
             error:false,
             newChat,
@@ -31,6 +38,7 @@ export const createChat = async(req, res) => {
         })
 
     }catch(error){
+        console.log(error)
         return res.status(500).json({error:true, message:"Internal Server Error"})
     }
 }

@@ -6,9 +6,10 @@ import mongoose from "mongoose"
 
 export const sendMessage = async(req, res) => {
     const {sender, reciever, content, chatId, imageUrl} = req.body
-    if(!sender || !reciever || !chatId || !content){
+    if(!sender || !reciever || !chatId){
         return res.status(400).json({error:true, message:'please enter a valid input'})
     }
+    if(!imageUrl && !content) return res.status(400).json({error:true, message:'please enter a valid input'})
     try {
         let imageUrls
         if(imageUrl) {
@@ -20,7 +21,8 @@ export const sendMessage = async(req, res) => {
         }
         const newMessage = await Message.create({
             ...req.body,
-            imageUrl:imageUrls
+            imageUrl:imageUrls,
+            ...((content !== '') && {content})
         })
         if(!newMessage){
             return res.status(400).json({error:true, message:'Failed to create message'})

@@ -13,7 +13,7 @@ const chatSchema = new Schema({
         ref: "User",
         required: true,
       },
-    lastMessage: { type: String, required: true},
+    lastMessage: { type: String, default:""},
 });
 
 const Chat = mongoose.model("Chat", chatSchema)

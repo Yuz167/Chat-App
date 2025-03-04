@@ -24,12 +24,14 @@ export interface IMessage extends mongoose.Document {
     content: string;
     chatId: string;
     imageUrl?: string[];
-    createdAt: Date;   // Automatically set by Mongoose
-    updatedAt: Date;
+    createdAt: string;   // Automatically set by Mongoose
+    updatedAt: string;
 }
 
 export interface IFriendRequest extends mongoose.Document {
     _id: mongoose.Types.ObjectId;
     sender: mongoose.Types.ObjectId;
     reciever: mongoose.Types.ObjectId;
+    createdAt: string;   // Automatically set by Mongoose
+    updatedAt: string;
 }

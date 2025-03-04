@@ -25,7 +25,17 @@ const AuthProvider = ({children}:{children:ReactNode}) => {
 
 
   return (
-    loading? <p>Loading ....</p> : <main>{children}</main>
+    loading? <p>Loading ....</p> : 
+    
+    <div className='text-white w-screen h-screen relative flex justify-center items-center'>
+      <img 
+        src={'/bg.jpg'}
+        className='object-cover h-full w-full absolute -z-10'
+      />
+      <main className='flex bg-[rgba(17,25,40,0.75)] h-[90vh] w-[90vw] rounded-md backdrop-blur-md backdrop-saturate-150 border-[1px] border-solid border-[rgba(255, 255, 255, 0.125)]'>
+        {children}
+      </main>
+    </div>
   )
 }
 

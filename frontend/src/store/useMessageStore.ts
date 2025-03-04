@@ -29,7 +29,8 @@ export const useMessageStore = create((set, get:()=>any) => ({
     },
 
     sendMessage : async (data:{sender:mongoose.Types.ObjectId, reciever:mongoose.Types.ObjectId, chatId:string, content:string, imageUrl:string[]}) => {
-        if (!data.sender || !data.reciever || !data.chatId || !data.content) throw new Error('Missing some informations');
+        if (!data.sender || !data.reciever || !data.chatId) throw new Error('Missing some informations')
+        if(!data.content && !data.imageUrl) throw new Error('Missing some informations')
         try {
             const response = await axiosInstance.post('/message/sendMessage', data)
             return { newMessage: response.data.newMessage, chatId:data.chatId}
@@ -50,7 +51,7 @@ export const useMessageStore = create((set, get:()=>any) => ({
                     if(!oldChats) return oldChats
                     return oldChats.map((chat:IChat)=>(
                         chat._id.toString() === useChatStore.getState().selectedChat.selectedChatId ? 
-                        {...chat, lastMessage:data.newMessage.content}
+                        {...chat, lastMessage:data.newMessage.content || 'img'}
                         :
                         chat
                     ))

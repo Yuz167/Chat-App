@@ -4,6 +4,7 @@ import Chat from "../models/chat.model.js"
 import FriendRequest from "../models/friendRequest.model.js"
 import bcrypt from "bcryptjs"
 import { getReciverSocketId, io } from "../lib/socket.js"
+import cloudinary from "../lib/cloudinary.js"
 
 export const signup = async(req, res) =>{
     const{username, password, email, imageId, imageUrl} = req.body
@@ -17,9 +18,16 @@ export const signup = async(req, res) =>{
         const salt = await bcrypt.genSalt()
         const hashedPassword = await bcrypt.hash(password, salt)
 
+        let avatar
+        if(imageUrl) {
+            const uploadResponse = await cloudinary.uploader.upload(imageUrl)
+            avatar = uploadResponse.secure_url
+        }
+
         const newUser = new User({
             ...req.body,
-            password:hashedPassword
+            password:hashedPassword,
+            imageUrl:avatar
         })
         if(newUser){
             generateToken(newUser._id, res)
@@ -32,6 +40,7 @@ export const signup = async(req, res) =>{
             res.status(400).json({error:true, message: "Invalid user data"})
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({error:true, message:"Internal Server Error"})
     }
 }
@@ -164,7 +173,7 @@ export const getFriendRequests = async(req, res) => {
     if(!currentUser) return res.status(400).json({error:true, message:"Missing current user"})
 
     try {
-        const friendRequests = await FriendRequest.find({reciever:currentUser})
+        const friendRequests = await FriendRequest.find({reciever:currentUser}).sort({createdAt:-1})
         if(!friendRequests) return res.status(400).json({error:true, message:"Something went wrong when getting friend requests"})
         
         return res.json({
@@ -175,5 +184,28 @@ export const getFriendRequests = async(req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({error:true, message:"Internal Server Error"})
+    }
+}
+
+export const deleteFriendRequest = async(req, res) => {
+    const {participant1, participant2} = req.body
+    if(!participant1 || !participant2) return res.status(400).json({error:true, message:"Missing participants"})
+    
+    try {
+        await FriendRequest.deleteOne({
+            $or:[{sender:participant1, reciever:participant2},
+                {sender:participant2, reciever:participant1}]
+        })
+        
+        if(res && !res.headersSent){
+            return res.json({
+                error:false,
+                message:"success",
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        if(res && !res.headersSent) return res.status(500).json({error:true, message:"Internal Server Error"})
+        throw new Error("Error deleting friend request: " + error.message)
     }
 }

@@ -1,24 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { useMessageStore } from '../store/useMessageStore'
 import { useChatStore } from '../store/useChatStore'
 import { useQueryClient } from '@tanstack/react-query'
 import { IMessage } from '../lib/interfaces'
 import { useAuthStore } from '../store/useAuthStore'
 import ImageComponent from './ImageComponent'
+import { computeTime } from '../lib/computeTime'
 
 const Chat = () => {
   const {id} = useParams()
   const queryClient =  useQueryClient()
   const {selectedChat, setSelectedChat} = useChatStore()
   const {authUser} = useAuthStore()
-  const {subscribeToMessage, unsubscribeFromMessages, selectedImages, setSelectedImages, useSendMessage, useGetMessages, clearSelectedImages, convertFileToBase64} = useMessageStore()
+  const {subscribeToMessage, unsubscribeFromMessages, selectedImages, setSelectedImages, useSendMessage, useGetMessages, clearSelectedImages, convertFileToBase64, useGetIndividulUser} = useMessageStore()
   const {data:messages, isFetching:isLoadingMessages} = useGetMessages(id)
   const {mutateAsync:sendMessage} = useSendMessage()
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false)
   const [text, setText] = useState<string>('')
   const messageEndRef = useRef<HTMLDivElement | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
 
 
 
@@ -74,9 +76,9 @@ const Chat = () => {
     <div className='flex-2 border-x-[1px] border-x-[#dddddd35] flex flex-col'>
       <div className='flex justify-between items-center p-4 border-b-[#dddddd35] border-b-[1px]'>
         <div className='flex gap-4 items-center'>
-          <img src='/avatar.png' className='rounded-full object-cover h-[60px] w-[60px]'/>
+          <img src={searchParams.get('chatUserAvatar') || '/avatar.png'} className='rounded-full object-cover h-[60px] w-[60px]'/>
           <div>
-            <p className='text-[18px] font-semibold'>Jane Doe</p>
+            <p className='text-[18px] font-semibold'>{searchParams?.get('chatUser')}</p>
             <p className='text-[12px] font-light text-[#a5a5a5]'>Study hard, Play hard</p>
           </div>
         </div>
@@ -95,22 +97,24 @@ const Chat = () => {
             {message.imageUrl?.map((imageUrl:string)=>(
               <img src={imageUrl} className='w-full max-h-[300px] rounded-lg object-contain'/>
             ))}
-            <div className='bg-[rgb(81,131,254)] p-4 rounded-lg w-fit self-end'>
+            {message.content && <div className='bg-[rgb(81,131,254)] p-4 rounded-lg w-fit self-end'>
               <p className='text-sm'>{message.content}</p>
-            </div>
-            <p className='text-xs'>{message.createdAt.toString()}</p>
+            </div>}
+            <p className='text-xs'>{computeTime(message.createdAt)}</p>
           </div>
           :
           <div ref={messageEndRef} className='flex gap-4'>
-            <img src='/avatar.png' className='h-[30px] w-[30px] rounded-full'/>
+            <img src={searchParams.get('chatUserAvatar') || '/avatar.png'} className='h-[30px] w-[30px] rounded-full'/>
             <div className='space-y-1 max-w-[26rem]'>
               {message.imageUrl?.map((imageUrl:string)=>(
                 <img src={imageUrl} className='w-full max-h-[300px] rounded-lg object-contain'/>
               ))}
-              <div className='bg-[rgba(17,25,40,0.3)] p-4 rounded-lg w-fit'>
-                <p className='text-sm'>{message.content}</p>
-              </div>
-              <p className='text-xs'>{message.createdAt.toString()}</p>
+              {message.content && 
+                <div className='bg-[rgba(17,25,40,0.3)] p-4 rounded-lg w-fit'>
+                  <p className='text-sm'>{message.content}</p>
+                </div>
+              }
+              <p className='text-xs'>{computeTime(message.createdAt)}</p>
             </div>
           </div>
         ))}
@@ -140,7 +144,18 @@ const Chat = () => {
               ))}
             </div>
           }
-          <input onChange={(e)=>setText(e.target.value)} value={text} placeholder='Type a message...' className='w-full text-[16px] bg-transparent focus:border-none focus:outline-none'></input>
+          <input 
+            onChange={(e)=>setText(e.target.value)} 
+            value={text} 
+            onKeyDown={(e) => {
+              if(e.key === 'Enter'){
+                deliverMessage()
+              }
+            }} 
+            placeholder='Type a message...' 
+            className='w-full text-[16px] bg-transparent focus:border-none focus:outline-none'>
+          </input>
+
         </div>
         <div className='flex items-center gap-4 relative'>
           <img src='/emoji.png' className='w-[20px] h-[20px] cursor-pointer' onClick={() => setShowEmojiPicker(prev => !prev)}/>

@@ -1,0 +1,91 @@
+{
+  "hash": "39c2bdc4",
+  "configHash": "69a040b1",
+  "lockfileHash": "b95e8bd0",
+  "browserHash": "b2b94a06",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "81fddbf8",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "c92e5fe5",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "e1d55a5c",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "e8f730ec",
+      "needsInterop": false
+    },
+    "@tanstack/react-query": {
+      "src": "../../node_modules/@tanstack/react-query/build/modern/index.js",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "b72760d5",
+      "needsInterop": false
+    },
+    "react-hook-form": {
+      "src": "../../node_modules/react-hook-form/dist/index.esm.mjs",
+      "file": "react-hook-form.js",
+      "fileHash": "6e3fbed7",
+      "needsInterop": false
+    },
+    "emoji-picker-react": {
+      "src": "../../node_modules/emoji-picker-react/dist/emoji-picker-react.esm.js",
+      "file": "emoji-picker-react.js",
+      "fileHash": "c12e8be1",
+      "needsInterop": false
+    },
+    "react-icons/fc": {
+      "src": "../../node_modules/react-icons/fc/index.mjs",
+      "file": "react-icons_fc.js",
+      "fileHash": "1eb7ba95",
+      "needsInterop": false
+    },
+    "zustand": {
+      "src": "../../node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "0c183a95",
+      "needsInterop": false
+    },
+    "socket.io-client": {
+      "src": "../../node_modules/socket.io-client/build/esm/index.js",
+      "file": "socket__io-client.js",
+      "fileHash": "66194a85",
+      "needsInterop": false
+    },
+    "react-intersection-observer": {
+      "src": "../../node_modules/react-intersection-observer/dist/index.mjs",
+      "file": "react-intersection-observer.js",
+      "fileHash": "2b6aa614",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "a7ddab97",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-WOWBALJJ": {
+      "file": "chunk-WOWBALJJ.js"
+    },
+    "chunk-RVMO727X": {
+      "file": "chunk-RVMO727X.js"
+    },
+    "chunk-WOOG5QLI": {
+      "file": "chunk-WOOG5QLI.js"
+    }
+  }
+}

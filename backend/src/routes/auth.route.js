@@ -1,5 +1,5 @@
 import express from "express"
-import { checkAuth, login, logout, signup, getUsers, sendFriendRequest, getFriendRequests, getIndividulUser } from "../controllers/auth.controller.js"
+import { checkAuth, login, logout, signup, getUsers, sendFriendRequest, getFriendRequests, getIndividulUser, deleteFriendRequest } from "../controllers/auth.controller.js"
 import { authenticateUser } from "../middleware/auth.middleware.js"
 
 const router = express.Router()
@@ -11,6 +11,8 @@ router.post("/login", login)
 router.post("/logout", logout)
 
 router.post("/sendFriendRequest", authenticateUser, sendFriendRequest)
+
+router.post("/deleteFriendRequest", authenticateUser, deleteFriendRequest)
 
 router.get("/getFriendRequests", authenticateUser, getFriendRequests)
 
