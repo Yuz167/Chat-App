@@ -55,10 +55,10 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/chat-app.git
+git clone https://github.com/your-username/Chat-App.git
 
 # Install dependencies
-cd chat-app
+cd Chat-App
 npm install
 
 # Start the server
